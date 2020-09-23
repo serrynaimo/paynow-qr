@@ -3,7 +3,7 @@ Mobile friendly landing page to generate transaction specific Singapore PayNow Q
 See example at https://serrynaimo.github.io/paynow-qr/?amount=10.00&reference=Invoice%2020200923
 
 ## Setup
-Clone this repo, change the following variables to your company name and UEN and host on your own website for more customer trust.
+Clone this repo, change the following variables in the index.html to your company name and UEN and host on your own website for more customer trust.
 ```js
 const uen = '201207337D' // CHANGE TO YOUR UEN
 const entity = 'Nerdherd Pte Ltd' // CHANGE TO YOUR ENTITY NAME
