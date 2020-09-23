@@ -1,6 +1,6 @@
 # paynow-qr
 Mobile friendly landing page to generate transaction specific Singapore PayNow QR codes.
-See example at https://serrynaimo.github.io/paynow-qr/?amount=10.00&reference=My%20Latest%20Invoice%20-%2020200923
+See example at https://serrynaimo.github.io/paynow-qr/?amount=10.00&reference=My%20Latest%20Invoice%20%2020200923
 
 ## Setup
 Clone this repo, change the following variables to your company name and UEN and host on your own website for more customer trust.
