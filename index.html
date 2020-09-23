@@ -1,6 +1,6 @@
 <html lang="en">
   <head>
-    <title>Pay via PayNow</title>
+    <title>Pay via PayNow QR</title>
     <meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover' />
     <style>
       html, body {
@@ -144,7 +144,7 @@ const entity = 'Nerdherd Pte Ltd' // CHANGE TO YOUR ENTITY NAME
 const query = new URL(location).searchParams
 const amount = parseFloat(query.get('amount'))
 const validAmount = !isNaN(amount) && amount >= 1
-const reference = (query.get('reference') || '').substr(0, 35)
+const reference = (query.get('reference') || '').replace(/[^a-z0-9 -]/gi, ' ').replace(/  /g, ' ').substr(0, 35)
 const payNowString = generatePayNow({
   uen,
   editable: validAmount ? '0' : '1',
@@ -156,7 +156,7 @@ const qr = qrcode(0, 'Q')
 qr.addData(payNowString)
 qr.make()
 
-document.title = `Pay ${entity} via PayNow`
+document.title = `Pay ${entity} via PayNow QR`
 document.getElementById('entity').innerText = entity
 document.getElementById('uen').innerText = uen
 document.getElementById('amount').innerText = validAmount ? amount.toLocaleString(undefined, { style: 'currency', currency: 'SGD', maximumFractionDigits: 2, minimumFractionDigits: 2 }) : ''
