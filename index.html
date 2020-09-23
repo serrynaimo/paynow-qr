@@ -148,7 +148,7 @@ document.getElementById('entity').innerText = entity
 document.getElementById('uen').innerText = uen
 document.getElementById('amount').innerText = validAmount ? amount.toLocaleString(undefined, { style: 'currency', currency: 'SGD', maximumFractionDigits: 2, minimumFractionDigits: 2 }) : ''
 document.getElementById('ref').innerText = reference
-document.getElementById('qr').innerHTML = qr.createImgTag()
+document.getElementById('qr').innerHTML = qr.createImgTag(6)
 
     </script>
   </body>
