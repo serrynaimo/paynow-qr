@@ -51,7 +51,6 @@
         margin-bottom: .8em;
       }
       #qr {
-        position: relative;
         width: 250px;
         height: 250px;
         display: flex;
@@ -65,23 +64,36 @@
         filter: contrast(0.61) sepia() brightness(1.5) hue-rotate(255deg) saturate(2.4) contrast(2.2);
       }
       #qr:empty:before {
-        content: "Loading...";
-      }
-      #qr:not(:empty):before {
         content: "";
-        position: absolute;
-        top: 125px;
-        left: 125px;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #771976;
+        border-left-color: transparent;
+        border-radius: 50%;
+        animation: rotate 1s linear infinite;
+        transform: rotate(0deg);
+      }
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      #qr + img {
+        position: relative;
+        top: -125px;
         width: 60px;
         height: 36px;
         margin: -19px -31px;
         border: 2px solid #fff;
         background-color: #fff;
-        background-image: url('./paynow.png');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: contain;
+        object-fit: contain;
         z-index: 2;
+      }
+      #qr:empty + img {
+        visibility: hidden;
       }
       #scan {
         width: 188px;
@@ -92,7 +104,7 @@
         padding: .5em 1em;
         margin: 0 auto 1em;
       }
-      #qr:empty + #scan {
+      #qr:empty + img + #scan {
         visibility: hidden;
       }
       #info {
@@ -113,6 +125,7 @@
         <div id="amount"></div>
         <div id="ref"></div>
         <div id="qr"></div>
+        <img src="./paynow.png" alt="PayNow Logo" />
         <div id="scan">SCAN TO PAY</div>
       </div>
       <div id="info">
