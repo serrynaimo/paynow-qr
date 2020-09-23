@@ -1,0 +1,152 @@
+<html lang="en">
+  <head>
+    <title>Pay via PayNow</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover' />
+    <style>
+      html, body {
+        background: #f8f8f8;
+        text-align: center;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+      #content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+      }
+      #card {
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.2);
+        animation: fade .8s ease-out 1;
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      @keyframes fade {
+        0% {
+          transform: translate(0, 50px) scale(.9);
+          opacity: 0;
+        }
+        100% {
+          transform: translate(0, 0) scale(1);
+          opacity: 1;
+        }
+      }
+      #amount:not(:empty):before {
+        content: "Amount: "
+      }
+      #ref:not(:empty):before {
+        content: "Reference: "
+      }
+      h3 {
+        margin: 0;
+      }
+      #uen {
+        color: #777;
+        margin-bottom: .8em;
+      }
+      #qr {
+        position: relative;
+        width: 250px;
+        height: 250px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+      }
+      #qr img {
+        width: 250px;
+        height: 250px;
+        filter: contrast(0.61) sepia() brightness(1.5) hue-rotate(255deg) saturate(2.4) contrast(2.2);
+      }
+      #qr:empty:before {
+        content: "Loading...";
+      }
+      #qr:not(:empty):before {
+        content: "";
+        position: absolute;
+        top: 125px;
+        left: 125px;
+        width: 60px;
+        height: 36px;
+        margin: -19px -31px;
+        border: 2px solid #fff;
+        background-color: #fff;
+        background-image: url('./paynow.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        z-index: 2;
+      }
+      #scan {
+        width: 188px;
+        border-radius: 3px;
+        background: #771976;
+        color: #fff;
+        font-weight: bold;
+        padding: .5em 1em;
+        margin: 0 auto 1em;
+      }
+      #qr:empty + #scan {
+        visibility: hidden;
+      }
+      #info {
+        font-size: .8em;
+        color: #777;
+        width: 250px;
+      }
+      #info a {
+        color: #777;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <div id="card">
+        <h3 id="entity"></h3>
+        <div id="uen"></div>
+        <div id="amount"></div>
+        <div id="ref"></div>
+        <div id="qr"></div>
+        <div id="scan">SCAN TO PAY</div>
+      </div>
+      <div id="info">
+        <p>Compatible with any PayNow enabled Singapore Banking App.</p>
+        <a href="https://www.abs.org.sg/consumer-banking/pay-now" target="_blank" rel="noopener noreferrer nofollow">Learn more about PayNow</a>
+      </div>
+    </div>
+
+    <script src="./qrcode.js"></script>
+    <script src="./paynow.js"></script>
+    <script>
+
+const uen = '201207337D'
+const entity = 'Nerdherd Pte Ltd'
+
+const query = new URL(location).searchParams
+const amount = parseFloat(query.get('amount'))
+const validAmount = !isNaN(amount) && amount >= 1
+const refNumber = query.get('invoiceNo') || undefined
+const payNowString = generatePayNow({
+  uen,
+  editable: validAmount ? '0' : '1',
+  amount: validAmount ? amount.toFixed(2) : undefined,
+  entity,
+  refNumber
+})
+const qr = qrcode(0, 'Q')
+qr.addData(payNowString)
+qr.make()
+
+document.title = `Pay ${entity} via PayNow`
+document.getElementById('entity').innerText = entity
+document.getElementById('uen').innerText = uen
+document.getElementById('amount').innerText = validAmount ? amount.toLocaleString(undefined, { style: 'currency', currency: 'SGD', maximumFractionDigits: 2, minimumFractionDigits: 2 }) : ''
+document.getElementById('ref').innerText = refNumber || ''
+document.getElementById('qr').innerHTML = qr.createImgTag()
+
+    </script>
+  </body>
+</html>
