@@ -128,7 +128,7 @@ const entity = 'Nerdherd Pte Ltd'
 const query = new URL(location).searchParams
 const amount = parseFloat(query.get('amount'))
 const validAmount = !isNaN(amount) && amount >= 1
-const refNumber = query.get('invoiceNo') || undefined
+const refNumber = query.get('reference') || undefined
 const payNowString = generatePayNow({
   uen,
   editable: validAmount ? '0' : '1',
