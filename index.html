@@ -26,7 +26,7 @@
       }
       @keyframes fade {
         0% {
-          transform: translate(0, 50px) scale(.9);
+          transform: translate(0, 20px) scale(.9);
           opacity: 0;
         }
         100% {
@@ -131,13 +131,13 @@ const entity = 'Nerdherd Pte Ltd' // CHANGE TO YOUR ENTITY NAME
 const query = new URL(location).searchParams
 const amount = parseFloat(query.get('amount'))
 const validAmount = !isNaN(amount) && amount >= 1
-const refNumber = decodeURIComponent(query.get('reference')) || undefined
+const reference = (query.get('reference') || '').substr(0, 35)
 const payNowString = generatePayNow({
   uen,
   editable: validAmount ? '0' : '1',
   amount: validAmount ? amount.toFixed(2) : undefined,
   entity,
-  refNumber
+  refNumber: reference || undefined
 })
 const qr = qrcode(0, 'Q')
 qr.addData(payNowString)
@@ -147,7 +147,7 @@ document.title = `Pay ${entity} via PayNow`
 document.getElementById('entity').innerText = entity
 document.getElementById('uen').innerText = uen
 document.getElementById('amount').innerText = validAmount ? amount.toLocaleString(undefined, { style: 'currency', currency: 'SGD', maximumFractionDigits: 2, minimumFractionDigits: 2 }) : ''
-document.getElementById('ref').innerText = refNumber || ''
+document.getElementById('ref').innerText = reference
 document.getElementById('qr').innerHTML = qr.createImgTag()
 
     </script>
