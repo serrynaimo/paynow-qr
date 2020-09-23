@@ -131,7 +131,7 @@ const entity = 'Nerdherd Pte Ltd' // CHANGE TO YOUR ENTITY NAME
 const query = new URL(location).searchParams
 const amount = parseFloat(query.get('amount'))
 const validAmount = !isNaN(amount) && amount >= 1
-const refNumber = query.get('reference') || undefined
+const refNumber = decodeURIComponent(query.get('reference')) || undefined
 const payNowString = generatePayNow({
   uen,
   editable: validAmount ? '0' : '1',
