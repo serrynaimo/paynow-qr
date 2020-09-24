@@ -3,12 +3,13 @@
     <title>Pay via PayNow QR</title>
     <meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover' />
     <style>
-      html, body {
+      body {
         background: #f8f8f8;
         text-align: center;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       }
       #content {
+        position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -20,19 +21,6 @@
         background: #fff;
         padding: 20px;
         box-shadow: 0 10px 30px rgba(0,0,0,.2);
-        animation: fade .8s ease-out 1;
-        transform: translate(0, 0) scale(1);
-        opacity: 1;
-      }
-      @keyframes fade {
-        0% {
-          transform: translate(0, 20px) scale(.9);
-          opacity: 0;
-        }
-        100% {
-          transform: translate(0, 0) scale(1);
-          opacity: 1;
-        }
       }
       #card > div {
         max-width: 250px;
@@ -57,6 +45,13 @@
         justify-content: center;
         align-items: center;
         z-index: 1;
+        opacity: 0;
+        transform: scale(.8);
+        transition: all .5s .5s ease-out;
+      }
+      #qr:not(:empty) {
+        opacity: 1;
+        transform: scale(1);
       }
       #qr img {
         width: 250px;
@@ -91,9 +86,13 @@
         background-color: #fff;
         object-fit: contain;
         z-index: 2;
+        opacity: 1;
+        transform: scale(1);
+        transition: all .4s ease-out;
       }
       #qr:empty + img {
-        visibility: hidden;
+        opacity: 0;
+        transform: scale(.8);
       }
       #scan {
         width: 188px;
@@ -115,6 +114,9 @@
       #info a {
         color: #777;
       }
+      body.iframe {
+        background: #fff;
+      }
     </style>
   </head>
   <body>
@@ -125,7 +127,7 @@
         <div id="amount"></div>
         <div id="ref"></div>
         <div id="qr"></div>
-        <img src="./paynow.png" alt="PayNow Logo" />
+        <img id="logo" src="./paynow.png" alt="PayNow Logo" />
         <div id="scan">SCAN TO PAY</div>
       </div>
       <div id="info">
@@ -133,18 +135,35 @@
         <a href="https://www.abs.org.sg/consumer-banking/pay-now" target="_blank" rel="noopener noreferrer nofollow">Learn more about PayNow</a>
       </div>
     </div>
-
-    <script src="./qrcode.js"></script>
-    <script src="./paynow.js"></script>
     <script>
 
 const uen = '201207337D' // CHANGE TO YOUR UEN
 const entity = 'Nerdherd Pte Ltd' // CHANGE TO YOUR ENTITY NAME
 
+
+const isIframe = location !== top.location
 const query = new URL(location).searchParams
 const amount = parseFloat(query.get('amount'))
 const validAmount = !isNaN(amount) && amount >= 1
 const reference = (query.get('reference') || '').replace(/[^a-z0-9 -]/gi, ' ').replace(/  /g, ' ').substr(0, 35)
+
+document.title = `Pay ${entity} via PayNow QR`
+
+if (isIframe) {
+  document.body.classList.add('iframe')
+  document.getElementById('content').innerHTML = document.getElementById('qr').outerHTML + document.getElementById('logo').outerHTML
+} else {
+  document.getElementById('entity').innerText = entity
+  document.getElementById('uen').innerText = uen
+  document.getElementById('amount').innerText = validAmount ? amount.toLocaleString(undefined, { style: 'currency', currency: 'SGD', maximumFractionDigits: 2, minimumFractionDigits: 2 }) : ''
+  document.getElementById('ref').innerText = reference
+}
+
+    </script>
+    <script src="./qrcode.js"></script>
+    <script src="./paynow.js"></script>
+    <script>
+
 const payNowString = generatePayNow({
   uen,
   editable: validAmount ? '0' : '1',
@@ -156,11 +175,6 @@ const qr = qrcode(0, 'Q')
 qr.addData(payNowString)
 qr.make()
 
-document.title = `Pay ${entity} via PayNow QR`
-document.getElementById('entity').innerText = entity
-document.getElementById('uen').innerText = uen
-document.getElementById('amount').innerText = validAmount ? amount.toLocaleString(undefined, { style: 'currency', currency: 'SGD', maximumFractionDigits: 2, minimumFractionDigits: 2 }) : ''
-document.getElementById('ref').innerText = reference
 document.getElementById('qr').innerHTML = qr.createImgTag(6)
 
     </script>
