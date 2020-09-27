@@ -63,7 +63,7 @@ function crc16 (s) {
     crc = crcTable[j] ^ (crc << 8)
   }
 
-  return ((crc ^ 0) & 0xFFFF).toString(16).toUpperCase()
+  return padLeft(((crc ^ 0) & 0xFFFF).toString(16).toUpperCase(), 4)
 }
 
 function generatePayNow (opts) {
